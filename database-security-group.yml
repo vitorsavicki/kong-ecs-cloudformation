@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+    Generator: "former2"
+Description: "Kong Database SG"
+
+Resources:
+    EC2KongDatabaseSecurityGroup:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "Kong Database SG"
+            GroupName: "Kong"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "KongDatabase"
+            VpcId: "vpc-122344"
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                Description: "Rentcars - LAN"
+                FromPort: 5432
+                IpProtocol: "tcp"
+                ToPort: 5432
+              
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+Outputs:
+  EC2KongDatabaseSecurityGroup:
+    Description: Kong Database SG
+    Value: !Ref EC2KongDatabaseSecurityGroup
+    Export:
+      Name: EC2KongDatabaseSecurityGroup

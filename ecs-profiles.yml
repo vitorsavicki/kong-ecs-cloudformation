@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Manages Instance Profiles and Roles for Common ECS Usage"
+
+Resources:
+  ecsInstanceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action:
+          - "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service:
+            - "ec2.amazonaws.com"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+      # RoleName: !Join [ "-", [ !Ref "AWS::Region", "ecsInstanceRole" ] ]
+
+  ecsServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action:
+          - "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service:
+            - "ecs.amazonaws.com"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
+      # RoleName: !Join [ "-", [ !Ref "AWS::Region", "ecsServiceRole" ] ]
+
+  ecsInstanceInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - !Ref ecsInstanceRole
+
+Outputs:
+  ecsInstanceInstanceProfile:
+    Description: Instance Profile which allows EC2 instances in an ECS cluster to access ECS.
+    Value: !Ref ecsInstanceInstanceProfile
+    Export:
+      Name: ecsInstanceRole
+  ecsServiceRole:
+    Description: Role which allows ECS to make adjustments to infra as needed.
+    Value: !Ref ecsServiceRole
+    Export:
+      Name: ecsServiceRole
