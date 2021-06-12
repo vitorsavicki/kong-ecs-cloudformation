@@ -1,4 +1,4 @@
-# kong-ecscloudformation
+# kong-ecs-cloudformation
 
 order to install:
 1 - database-security-group.yml
